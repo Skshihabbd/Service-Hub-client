@@ -1,22 +1,21 @@
- import { Link,  useLocation, useNavigate } from "react-router-dom";
+/* eslint-disable no-unused-vars */
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { IoEyeOff } from "react-icons/io5";
-import { IoEye } from "react-icons/io5";
- import Custom from "../../sharedcomponent/custom/Custom";
-import Navbar from "../../sharedcomponent/navbar/Navbar";
+import { IoEyeOff, IoEye } from "react-icons/io5";
+import { FaCloudUploadAlt, FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import Custom from "../../sharedcomponent/custom/Custom";
 import Swal from "sweetalert2";
-
-
-// import { Helmet } from "react-helmet-async";
+import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const SignUP = () => {
-    const [showPassword, setShowPassword] = useState(false);
-   const { SignUp, updateUser } = Custom();
-  const [error ,setError]=useState(" ")
-  const loaction=useLocation()
-  const navigate=useNavigate()
-    console.log(SignUp)
+  const [showPassword, setShowPassword] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const { SignUp, updateUser } = Custom();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -24,161 +23,148 @@ const SignUP = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    const email = data.email;
-    const password = data.password;
-    const name = data.UserName;
-    const image = data.photourl;
-    
-console.log(email,password,name,image)
-    SignUp(email, password)
-      .then((result) => {
-        console.log(result.user);
-if(result.user){
-  navigate(loaction?.state?location.state:"/")
-}
+  const onSubmit = async (data) => {
+    setIsUploading(true);
+    try {
+      // 1. Image Upload to ImgBB
+      const imageFile = data.photo[0];
+      const formData = new FormData();
+      formData.append("image", imageFile);
 
+      const imgRes = await axios.post(
+        `https://api.imgbb.com/1/upload?key=9c8539154be0bafb013ab02d1bbf342b`,
+        formData
+      );
 
-        updateUser(name, image).then((result) => {
-          Swal.fire({
-            title: "SignUp success!",
-            text: " continue",
-            icon: "success",
-            confirmButtonText: "Close",
-          });
-          console.log("userupdated", result.user)
-            .catch((error) => console.log("user not updated", error.message));
-        });
-        reset();
-      })
-      .catch((errors) => {
-        console.log(errors.message);
-setError(errors.message)
+      const imageUrl = imgRes.data.data.display_url;
+
+      // 2. Firebase SignUp
+      const result = await SignUp(data.email, data.password);
+
+      // 3. Update Profile (Name & Hosted Image)
+      await updateUser(data.UserName, imageUrl);
+
+      Swal.fire({
+        title: "Welcome aboard!",
+        text: "Account created successfully.",
+        icon: "success",
+        confirmButtonColor: "#AE9467",
       });
+
+      reset();
+      navigate(location?.state ? location.state : "/");
+    } catch (err) {
+      Swal.fire("Error", err.message, "error");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
-    <div className="border-2 border-x-cyan-400 w-full min-h-screen bg-[#F3F3F3]  ">
-<Navbar></Navbar>
-      {/* <Helmet>
-        <title>Register</title>
-      </Helmet>   */}
+    <div className="h-screen w-full bg-[#FAF9F6] flex items-center justify-center p-4 overflow-hidden">
+      <Helmet>
+        <title>Hub || Create Account</title>
+      </Helmet>
 
-      {/* <Helmet>
-        <body><p>home|shihab</p></body>
-      </Helmet> */}
-      
-      <div className=" lg:w-2/4 mx-auto border-2 mt-8 bg-white">
-        <h1 className="text-center mb-10">Register your account</h1>
-        <hr className="w-5/6 mx-auto mb-12" />
-        <div className="px-16 ">
-          <form onSubmit={handleSubmit(onSubmit)} className="relative">
-            <label For="texts">Your Name </label>
-            <br />
-            <input
-              className="w-full bg-[#F3F3F3] mb-4 h-10 outline-0"
-              type="text"
-              name="name"
-              id="texts"
-              placeholder="Enter your name"
-              {...register("UserName", { required: true })}
-            />
-            {errors.UserName && <span>This field is required</span>}
-            <br />
-            <label For="urll">Photo Url </label>
-            <br />
-            <input
-              className="w-full bg-[#F3F3F3] mb-4 h-10 outline-0"
-              type="url"
-              name="url"
-              id="urll"
-              placeholder="Enter Photo URL"
-              {...register("photourl", {
-                required: "url is required",
-                pattern: {
-                  value: /^(ftp|http|https):\/\/[^ "]+$/,
-                  message: "Please enter a valid URL",
-                },
-              })}
-            />
-            {errors.photourl && <span>{errors.photourl.message}</span>}
-            <br />
-            <label For="emails">Email </label>
-            <br />
-            <input
-              className="w-full bg-[#F3F3F3] mb-4 h-10 outline-0"
-              type="email"
-              name="email"
-              id="emails"
-              required
-              placeholder="Enter your email address"
-              {...register("email", {
-                required: "Email Address is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Please enter a valid email address",
-                },
-              })}
-            />
-            {errors.email && <span>{errors.email.message}</span>}
-            <br />
-            <label For="passcode">Password</label>
-            <br />
-            <input
-              className="w-full bg-[#F3F3F3] mb-4 h-10 outline-0"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              id="passcode"
-              placeholder="Enter your password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
-                },
-                maxLength: {
-                  value: 16,
-                  message: "Password must not exceed 16 characters",
-                },
-
-                pattern: {
-                  value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
-                  message:
-                    "Password must include at least one uppercase letter, one lowercase letter, and one number",
-                },
-              })}
-            />
-            <button
-              onClick={() => setShowPassword(!showPassword)}
-              className=" absolute right-10 bottom-[7.813rem] "
-            >
-              {showPassword ? (
-                <IoEye className="text-yellow-700 text-xl" />
-              ) : (
-                <IoEyeOff className="text-xl text-black" />
-              )}
-            </button>
-            {errors.password && (
-              <span className="text-red-800">{errors.password.message}</span>
-            )}
-            <br />
-            <input
-              type="checkbox"
-              name="checkbox"
-              id="check"
-              {...register("checkbook", { required: true })}
-            />
-            <label For="check">Accept Term & Conditions</label> <br />
-            {errors.checkbook && <span>This field is required</span>}
-            <button className="w-full btn btn-primary my-3 ">Register</button>
-          </form>
-          <p>{error}</p>
-          <p className="text-center">
-            Have an account
-            <Link to="/signin" className="text-green-500">
-              Login
-            </Link>
+      <div className="w-full max-w-[450px] bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden flex flex-col">
+        {/* Compact Header */}
+        <div className="bg-gray-900 py-6 text-center">
+          <h2 className="text-2xl font-serif font-bold text-[#AE9467] italic uppercase tracking-tighter">
+            Register
+          </h2>
+          <p className="text-gray-400 text-[10px] uppercase tracking-[0.2em] mt-1">
+            Join our professional community
           </p>
+        </div>
+
+        <div className="p-6 md:p-8 flex-grow overflow-y-auto custom-scrollbar">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+            {/* Name */}
+            <div className="relative">
+              <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
+              <input
+                {...register("UserName", { required: true })}
+                className="w-full bg-gray-50 border border-gray-100 py-2.5 pl-11 pr-4 rounded-xl focus:border-[#AE9467] outline-none text-sm transition-all"
+                placeholder="Full Name"
+              />
+            </div>
+
+            {/* Email */}
+            <div className="relative">
+              <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
+              <input
+                {...register("email", { required: true })}
+                className="w-full bg-gray-50 border border-gray-100 py-2.5 pl-11 pr-4 rounded-xl focus:border-[#AE9467] outline-none text-sm transition-all"
+                placeholder="Email Address"
+              />
+            </div>
+
+            {/* Photo Upload Styling */}
+            <div className="group relative border-2 border-dashed border-gray-200 rounded-xl py-3 flex flex-col items-center justify-center hover:border-[#AE9467] transition-all cursor-pointer">
+              <FaCloudUploadAlt className="text-[#AE9467] text-xl group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">
+                Upload Profile Photo
+              </span>
+              <input
+                {...register("photo", { required: true })}
+                type="file"
+                accept=".jpg,.png"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+            </div>
+
+            {/* Password */}
+            <div className="relative">
+              <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
+              <input
+                {...register("password", { required: true, minLength: 8 })}
+                type={showPassword ? "text" : "password"}
+                className="w-full bg-gray-50 border border-gray-100 py-2.5 pl-11 pr-11 rounded-xl focus:border-[#AE9467] outline-none text-sm transition-all"
+                placeholder="Secure Password (8+ characters)"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+              >
+                {showPassword ? <IoEye size={16} /> : <IoEyeOff size={16} />}
+              </button>
+            </div>
+
+            {/* Terms */}
+            <div className="flex items-center gap-2 px-1">
+              <input
+                {...register("check", { required: true })}
+                type="checkbox"
+                className="accent-[#AE9467] w-3 h-3"
+              />
+              <label className="text-[11px] text-gray-500">
+                I agree to the Terms & Conditions
+              </label>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              disabled={isUploading}
+              className={`w-full ${
+                isUploading ? "bg-gray-400" : "bg-gray-900"
+              } text-[#AE9467] font-bold py-3 rounded-xl hover:bg-[#AE9467] hover:text-white transition-all shadow-lg uppercase tracking-widest text-xs active:scale-95`}
+            >
+              {isUploading ? "Processing..." : "Create Account"}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-gray-500 text-xs">
+              Already a member?
+              <Link
+                to="/signin"
+                className="text-[#AE9467] font-bold ml-1.5 hover:underline tracking-tighter uppercase"
+              >
+                Login
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
