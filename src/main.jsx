@@ -13,14 +13,15 @@ import Laoding from "./page component/loading/Laoding.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
 
+
+<Suspense fallback={<Laoding></Laoding>}>
 <HelmetProvider>
 <AuthProvider>
-<Suspense fallback={<Laoding></Laoding>}>
   <RouterProvider router={router} />
-
-</Suspense>
 </AuthProvider>
 </HelmetProvider>
+</Suspense>
+
 
 
    

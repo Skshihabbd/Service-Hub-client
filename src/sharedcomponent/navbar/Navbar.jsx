@@ -38,7 +38,7 @@ const Navbar = () => {
     <nav
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#AE9467]/90 backdrop-blur-md shadow-lg py-2"
+          ? "lg:bg-[#AE9467]/90 bg-[#AE9467] lg:backdrop-blur-md lg:shadow-lg py-2"
           : "bg-[#AE9467] py-4"
       }`}
     >
@@ -101,12 +101,7 @@ const Navbar = () => {
             </div>
 
             {/* Dark Mode Toggle */}
-            <div className="flex items-center pl-4 border-l border-white/20">
-              <input
-                type="checkbox"
-                className="toggle toggle-warning toggle-sm theme-controller"
-              />
-            </div>
+            
           </div>
 
           {/* User Section */}
@@ -168,7 +163,7 @@ const Navbar = () => {
 
       {/* Mobile Drawer */}
       <div
-        className={`lg:hidden fixed inset-0 z-[60] transition-visibility ${
+        className={`lg:hidden fixed inset-0 z-50 transition-visibility ${
           isOpen ? "visible" : "invisible"
         }`}
       >
