@@ -10,8 +10,12 @@ const AuthProviderS = ({children}) => {
 
   // 🔹 reload / first load user fetch
   useEffect(() => {
-    
-      axios.get("http://localhost:5020/me",
+
+
+    const apiHit= setInterval(() => {
+
+
+        axios.get("http://localhost:5020/me",
         {withCredentials:true}
       )
       .then(res => {
@@ -23,6 +27,10 @@ const AuthProviderS = ({children}) => {
       .finally(() => {
         setLoading(false);
       });
+        
+    }, 5000);
+    
+     return () => clearInterval(apiHit); 
   }, []);
 
 // logout
