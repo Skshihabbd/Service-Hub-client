@@ -14,11 +14,11 @@ import { Tooltip } from "react-tooltip";
 import Custom from "../custom/Custom";
 
 const Navbar = () => {
-  const { users, logOut } = Custom();
+  const { users ,logout} = Custom();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-
+console.log(users);
   // Handle scroll for glass effect
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -110,11 +110,11 @@ const Navbar = () => {
               <div className="relative group">
                 <div className="flex items-center gap-3 cursor-pointer bg-white/10 px-3 py-1.5 rounded-full border border-white/20 hover:bg-white/20 transition">
                   <span className="text-sm font-medium">
-                    {users?.displayName?.split(" ")[0]}
+                    {users?.name?.split(" ")[0]}
                   </span>
                   <img
                     className="w-8 h-8 rounded-full border border-amber-200"
-                    src={users?.photoURL}
+                    src={users?.photo}
                     alt="Profile"
                   />
                 </div>
@@ -124,16 +124,16 @@ const Navbar = () => {
                     <div className="flex flex-col items-center mb-4">
                       <img
                         className="w-16 h-16 rounded-full border-2 border-amber-500 mb-2"
-                        src={users?.photoURL}
+                        src={users?.photo}
                         alt=""
                       />
-                      <p className="font-bold text-lg">{users?.displayName}</p>
+                      <p className="font-bold text-lg">{users?.name}</p>
                       <p className="text-xs text-gray-500 italic">
                         {users?.email}
                       </p>
                     </div>
                     <button
-                      onClick={logOut}
+                      onClick={logout}
                       className="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white py-2.5 rounded-xl font-semibold hover:shadow-lg transition active:scale-95"
                     >
                       Sign Out
@@ -212,7 +212,7 @@ const Navbar = () => {
                   text="Booked Service"
                 />
                 <button
-                  onClick={logOut}
+                  onClick={logout}
                   className="text-left text-red-200 font-bold pt-4"
                 >
                   Sign Out

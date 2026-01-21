@@ -6,14 +6,20 @@ import { Helmet } from "react-helmet";
 import { Fade } from "react-awesome-reveal";
 import { FaArrowRight } from "react-icons/fa";
 import PopularService from "./PopularService";
-import { Suspense } from "react";
-import Laoding from "../loading/Laoding";
+
 
 const Home = () => {
   const datas = useLoaderData();
 
+  if(!datas){
+    return (
+      <div>
+        loading
+      </div>
+    )
+  }
+
   return (
-    <Suspense fallback={<Laoding/>}>
       <div className="bg-white">
       <Helmet>
         <title>Service Hub || Professional Solutions</title>
@@ -101,7 +107,6 @@ const Home = () => {
 
       <Footer />
     </div>
-    </Suspense>
   );
 };
 

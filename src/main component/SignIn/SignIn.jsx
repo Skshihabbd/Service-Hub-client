@@ -9,9 +9,10 @@ import SocialLogin from "../../page component/SocialLogin/SocialLogin";
 import Swal from "sweetalert2";
 import { Helmet } from "react-helmet";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
 
 const SignIn = () => {
-  const { SignIn } = Custom();
+  const { setUser } = Custom();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,22 +24,56 @@ const SignIn = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    const { email, password } = data;
-    SignIn(email, password)
-      .then(() => {
-        Swal.fire({
-          title: "Success!",
-          text: "Welcome Back",
-          icon: "success",
-          confirmButtonColor: "#AE9467",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-        reset();
-        navigate(location?.state ? location.state : "/");
-      })
-      .catch(() => toast.error("Invalid credentials"));
+  // const onSubmit = (data) => {
+  //   const { email, password } = data;
+  //   SignIn(email, password)
+  //     .then(() => {
+  //       Swal.fire({
+  //         title: "Success!",
+  //         text: "Welcome Back",
+  //         icon: "success",
+  //         confirmButtonColor: "#AE9467",
+  //         timer: 1500,
+  //         showConfirmButton: false,
+  //       });
+  //       reset();
+  //       navigate(location?.state ? location.state : "/");
+  //     })
+  //     .catch(() => toast.error("Invalid credentials"));
+  // };
+
+  const onSubmit = async (data) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5020/login",
+        {
+          email: data.email,
+          password: data.password,
+        },
+        {
+          withCredentials: true, // important: send cookies for session
+        },
+      );
+      setUser(res?.data?.user);
+      // Successful login
+      Swal.fire({
+        title: "Success!",
+        text: "Welcome Back",
+        icon: "success",
+        confirmButtonColor: "#AE9467",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      reset();
+      // Redirect to previous page or home
+      navigate(location?.state?.from || "/");
+    } catch (err) {
+      // Failed login
+      toast.error(
+        err.response?.data?.message || "Invalid credentials, try again!",
+      );
+    }
   };
 
   return (

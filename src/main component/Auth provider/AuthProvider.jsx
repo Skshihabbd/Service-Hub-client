@@ -66,9 +66,9 @@ const AuthProvider = ({ children }) => {
     setLoader(true);
   };
 
-  if (loader) {
-    return <Laoding />;
-  }
+  // if (loader) {
+  //   return <Laoding />;
+  // } 
 
   const allData = {
     SignUp,

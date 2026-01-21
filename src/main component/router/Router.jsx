@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Errorpage from "../../page component/errorpage/Errorpage";
 import Root from "./root/Root";
-import Home from "../../page component/home/Home"
+// import Home from "../../page component/home/Home"
 import SignIn from "../SignIn/SignIn";
 import SignUP from "../SignUp/SignUP";
 import UpdateUser from "../../page component/updateuser/UpdateUser";
@@ -9,9 +9,13 @@ import UserAddData from "../../page component/useradd/UserAddData";
 import Cradviewdetailsmake from "../../page component/card and view details/Cradviewdetailsmake";
 import PrivetRoute from "../../sharedcomponent/PrivetRoute";
 import Myservice from "../../page component/myservices/Myservice";
-import Allservice from "../../page component/allservices/Allservice";
+// import Allservice from "../../page component/allservices/Allservice";
 import Booked from "../../page component/booked service/Booked";
 import AuthLayout from "./root/AuthLayout";
+import { lazy } from "react";
+
+const Home=lazy(()=> import("../../page component/home/Home"))
+const Allservice=lazy(()=> import("../../page component/allservices/Allservice"))
 
 const router = createBrowserRouter([
   {
@@ -30,11 +34,17 @@ const router = createBrowserRouter([
     errorElement: <Errorpage />,
     children: [
       {
-        index: true,
-
-        element: <Home/>,
-        loader: () => fetch("https://server-shihab.vercel.app/adminsenddata"),
-      },
+  index: true,
+  element: <Home />,
+  loader: () =>
+    fetch("http://localhost:5020/adminsenddata", {
+      method: "GET",
+      credentials: "include", // 🔥 crucial for sending session cookie
+    }).then(res => {
+      if (!res.ok) throw new Error("Unauthorized");
+      return res.json();
+    }),
+},
       {
         path: "/booked",
         element: (

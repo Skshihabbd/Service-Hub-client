@@ -1,18 +1,20 @@
+/* eslint-disable react/prop-types */
 import { Navigate, useLocation } from "react-router-dom";
+import Laoding from "../page component/loading/Laoding";
 import Custom from "./custom/Custom";
 
 
 const PrivetRoute = ({children}) => {
 
-    const { users, loader } = Custom()
+    const { users, loading } = Custom()
     const location =useLocation()
     
   
-    if (loader) {
+    if (loading) {
       return (
-        <div className="h-svh flex bg-black items-center w-full">
-          <div className="w-16 h-16  border-4 mx-auto  border-dashed rounded-full animate-spin dark:border-violet-600"></div>
-        </div>
+       <div>
+        <Laoding/>
+       </div>
         
       );
     }
