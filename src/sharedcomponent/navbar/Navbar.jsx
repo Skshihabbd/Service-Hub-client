@@ -143,7 +143,7 @@ console.log(users);
               </div>
             ) : (
               <Link
-                to="/signin"
+                to="/auth/signin"
                 className="login bg-white text-[#AE9467] p-2.5 rounded-full hover:bg-amber-100 transition-colors shadow-lg"
               >
                 <GrUserManager className="text-xl" />

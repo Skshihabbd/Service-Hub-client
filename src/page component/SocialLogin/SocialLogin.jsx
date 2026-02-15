@@ -36,7 +36,7 @@ const SocialLogin = () => {
   return (
     <div className="flex justify-center w-full px-2">
   <a
-    href="http://localhost:5020/auth/google" // 🔥 backend route
+    href="https://server-shihab.vercel.app/auth/google" // 🔥 backend route
     className="group w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-100 py-3.5 rounded-2xl hover:border-[#AE9467] hover:bg-gray-50 transition-all duration-300 shadow-sm active:scale-[0.98]"
   >
     <FcGoogle className="text-2xl group-hover:scale-110 transition-transform" />

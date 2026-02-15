@@ -30,7 +30,7 @@ const Home = () => {
 
       <main>
         {/* Elegant Announcement Bar */}
-        <div className="bg-[#AE9467] text-white py-2.5 px-4 text-center text-xs md:text-sm tracking-widest uppercase font-medium mt-16 md:mt-20">
+        <div className="bg-[#AE9467] text-white py-3 px-4 text-center text-xs md:text-sm tracking-widest uppercase font-medium mt-16 md:mt-20">
           <p>✨ We ship nationwide. 30-day return policy. Free shipping on orders over $75 ✨</p>
         </div>
 

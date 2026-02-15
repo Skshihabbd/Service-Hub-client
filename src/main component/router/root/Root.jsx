@@ -1,19 +1,37 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigation } from "react-router-dom";
 import Navbar from "../../../sharedcomponent/navbar/Navbar";
-import { Suspense } from "react";
-import Laoding from "../../../page component/loading/Laoding";
+import { Suspense, useContext, useEffect } from "react";
+import { LoadingContext } from "../../Auth provider/LoadingProvider";
+import GlobalLoader from "../../Auth provider/GlobalLoader";
 
 const Root = () => {
+  const navigation = useNavigation();
+  const { loadings } = useContext(LoadingContext);
+  const routeLoading = navigation.state === "loading";
+ 
+
+  // hide preloader when loading finishes
+  useEffect(() => {
+    const preloader = document.getElementById("preloader");
+    if (!loadings && preloader) {
+      preloader.style.display = "none"; // loading false হলে hide
+    }
+  }, [loadings]);
+
+ 
+
   return (
-    <div className="bg-[#FAF9F6] min-h-screen">
-      <Navbar />
+     <div className="bg-[#FAF9F6] min-h-screen">
+
       
-      {/* Suspense ekhane add kora hoyeche jate Outlet (pages) load hobar somoy fallback dekhay */}
-      <Suspense 
-        fallback={
-         <Laoding/>
-        }
-      >
+
+      {/* Route + API loading */}
+      {(loadings || routeLoading) && <GlobalLoader />}
+      
+      <Navbar />
+
+      {/* Suspense for lazy-loaded components */}
+      <Suspense fallback={<GlobalLoader />}>
         <Outlet />
       </Suspense>
     </div>

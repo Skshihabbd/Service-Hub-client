@@ -22,43 +22,7 @@ const SignUP = () => {
     formState: { errors },
   } = useForm();
 
-  // const onSubmit = async (data) => {
-  //   setIsUploading(true);
-  //   try {
-  //     // 1. Image Upload to ImgBB
-  //     const imageFile = data.photo[0];
-  //     const formData = new FormData();
-  //     formData.append("image", imageFile);
-
-  //     const imgRes = await axios.post(
-  //       `https://api.imgbb.com/1/upload?key=9c8539154be0bafb013ab02d1bbf342b`,
-  //       formData
-  //     );
-
-  //     const imageUrl = imgRes.data.data.display_url;
-
-  //     // 2. Firebase SignUp
-  //     const result = await SignUp(data.email, data.password);
-
-  //     // 3. Update Profile (Name & Hosted Image)
-  //     await updateUser(data.UserName, imageUrl);
-
-  //     Swal.fire({
-  //       title: "Welcome aboard!",
-  //       text: "Account created successfully.",
-  //       icon: "success",
-  //       confirmButtonColor: "#AE9467",
-  //     });
-
-  //     reset();
-  //     navigate(location?.state ? location.state : "/");
-  //   } catch (err) {
-  //     Swal.fire("Error", err.message, "error");
-  //   } finally {
-  //     setIsUploading(false);
-  //   }
-  // };
-
+  
 
 
 
@@ -88,7 +52,7 @@ const onSubmit = async (data) => {
     };
 
     // 3️⃣ Call backend register API
-    const res = await axios.post("http://localhost:5020/register", payload);
+    const res = await axios.post("https://server-shihab.vercel.app/register", payload);
 
     Swal.fire({
       title: "Success",
@@ -98,7 +62,7 @@ const onSubmit = async (data) => {
     });
 
     reset();
-    navigate("/signin"); // redirect after signup
+    navigate("/auth/signin"); // redirect after signup
   } catch (err) {
     console.error(err);
     Swal.fire({
@@ -214,7 +178,7 @@ const onSubmit = async (data) => {
             <p className="text-gray-500 text-xs">
               Already a member?
               <Link
-                to="/signin"
+                to="/auth/signin"
                 className="text-[#AE9467] font-bold ml-1.5 hover:underline tracking-tighter uppercase"
               >
                 Login

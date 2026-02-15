@@ -5,7 +5,6 @@ import { FaTag, FaUserCircle, FaArrowRight } from "react-icons/fa";
 const AllserviceCard = ({ datas }) => {
   const {
     ServiceImage,
-    userImage,
     description,
     ServiceName,
     price,
@@ -33,7 +32,7 @@ const AllserviceCard = ({ datas }) => {
 
         {/* Provider Image */}
         <img
-          src={userImage || "https://i.ibb.co/mS7y69j/user-placeholder.png"}
+          src={ "https://cdn.vectorstock.com/i/500p/28/59/flat-style-male-avatar-person-icon-vector-59492859.jpg"}
           alt={username}
           className="absolute -bottom-6 right-6 w-12 h-12 rounded-full ring-4 ring-white object-cover shadow-lg"
         />

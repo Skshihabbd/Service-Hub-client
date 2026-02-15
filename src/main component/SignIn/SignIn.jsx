@@ -45,7 +45,7 @@ const SignIn = () => {
   const onSubmit = async (data) => {
     try {
       const res = await axios.post(
-        "http://localhost:5020/login",
+        "https://server-shihab.vercel.app/login",
         {
           email: data.email,
           password: data.password,
@@ -67,7 +67,9 @@ const SignIn = () => {
 
       reset();
       // Redirect to previous page or home
-      navigate(location?.state?.from || "/");
+navigate(location?.state?.from || "/", {
+  replace: true,
+});
     } catch (err) {
       // Failed login
       toast.error(
@@ -147,7 +149,7 @@ const SignIn = () => {
             <p className="text-gray-500 text-xs">
               New here?
               <Link
-                to="/signup"
+                to="/auth/signup"
                 className="text-[#AE9467] font-bold ml-1.5 hover:underline uppercase tracking-tighter"
               >
                 Create Account

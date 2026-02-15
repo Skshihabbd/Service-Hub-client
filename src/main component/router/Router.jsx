@@ -9,22 +9,22 @@ import UserAddData from "../../page component/useradd/UserAddData";
 import Cradviewdetailsmake from "../../page component/card and view details/Cradviewdetailsmake";
 import PrivetRoute from "../../sharedcomponent/PrivetRoute";
 import Myservice from "../../page component/myservices/Myservice";
-// import Allservice from "../../page component/allservices/Allservice";
+//  import Allservice from "../../page component/allservices/Allservice";
 import Booked from "../../page component/booked service/Booked";
 import AuthLayout from "./root/AuthLayout";
 import { lazy } from "react";
 
-const Home=lazy(()=> import("../../page component/home/Home"))
-const Allservice=lazy(()=> import("../../page component/allservices/Allservice"))
+ const Home=lazy(()=> import("../../page component/home/Home"))
+ const Allservice=lazy(()=> import("../../page component/allservices/Allservice"))
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/auth",
     element: <AuthLayout />,
     errorElement: <Errorpage />,
     children: [
-      { path: "/signin", element: <SignIn /> },
-      { path: "/signup", element: <SignUP /> },
+      { path: "/auth/signin", element: <SignIn /> },
+      { path: "/auth/signup", element: <SignUP /> },
     ],
   },
 
@@ -34,19 +34,23 @@ const router = createBrowserRouter([
     errorElement: <Errorpage />,
     children: [
       {
-  index: true,
-  element: <Home />,
-  loader: () =>
-    fetch("http://localhost:5020/adminsenddata", {
-      method: "GET",
-      credentials: "include", // 🔥 crucial for sending session cookie
-    }).then(res => {
-      if (!res.ok) throw new Error("Unauthorized");
-      return res.json();
-    }),
-},
+        index: true,
+        element: <Home />,
+        loader: async () => {
+          const res = await fetch(
+            "https://server-shihab.vercel.app/adminsenddata",
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          );
+
+          if (!res.ok) throw new Error("Unauthorized");
+          return res.json();
+        },
+      },
       {
-        path: "/booked",
+        path: "booked",
         element: (
           <PrivetRoute>
             <Booked />
@@ -54,32 +58,37 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/cardview/:id",
+        path: "cardview/:id",
         element: (
           <PrivetRoute>
             <Cradviewdetailsmake />
           </PrivetRoute>
         ),
         loader: ({ params }) =>
-          fetch(`https://server-shihab.vercel.app/usersenddata/${params.id}`),
+          fetch(
+            `https://server-shihab.vercel.app/usersenddata/${params.id}`
+          ),
       },
       {
-        path: "/update/:id",
+        path: "update/:id",
         element: <UpdateUser />,
         loader: ({ params }) =>
-          fetch(`https://server-shihab.vercel.app/usersenddata/${params.id}`),
+          fetch(
+            `https://server-shihab.vercel.app/usersenddata/${params.id}`
+          ),
       },
       {
-        path: "/useradddata",
+        path: "useradddata",
         element: <UserAddData />,
       },
       {
-        path: "/allservice",
+        path: "allservice",
         element: <Allservice />,
-        loader: () => fetch("https://server-shihab.vercel.app/usersenddata"),
+        loader: () =>
+          fetch("https://server-shihab.vercel.app/usersenddata"),
       },
       {
-        path: "/myservice",
+        path: "myservice",
         element: (
           <PrivetRoute>
             <Myservice />
@@ -89,5 +98,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
 
 export default router;

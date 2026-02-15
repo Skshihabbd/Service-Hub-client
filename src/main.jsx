@@ -9,22 +9,19 @@ import router from "./main component/router/Router.jsx";
 import { HelmetProvider } from "react-helmet-async";
 import Laoding from "./page component/loading/Laoding.jsx";
 import AuthProviderS from "./main component/Auth provider/AuthProviderS.jsx";
+import { LoadingProvider } from "./main component/Auth provider/LoadingProvider.jsx";
 // import AuthProvider from "./main component/Auth provider/AuthProvider.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-
-
-<Suspense fallback={<Laoding></Laoding>}>
-<HelmetProvider>
-<AuthProviderS>
-  <RouterProvider router={router} />
-</AuthProviderS>
-</HelmetProvider>
-</Suspense>
-
-
-
-   
-  </React.StrictMode>
+    <Suspense fallback={<Laoding />}>
+      <LoadingProvider>
+        <HelmetProvider>
+          <AuthProviderS>
+            <RouterProvider router={router} />
+          </AuthProviderS>
+        </HelmetProvider>
+      </LoadingProvider>
+    </Suspense>
+  </React.StrictMode>,
 );
