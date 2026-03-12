@@ -17,11 +17,14 @@ const AuthLayout = () => {
       preloader.style.display = "none"; // loading false হলে hide
     }
   }, [loadings]);
-
+  
+if( routeLoading) {
+  return <GlobalLoader />
+}
   return (
     <div>
       <Suspense fallback={<Laoding/>}>
-       {(loadings || routeLoading) && <GlobalLoader />}
+       
         <Outlet />
       </Suspense>
     </div>

@@ -222,7 +222,7 @@ console.log(users);
 
             {!users && (
               <Link
-                to="/signin"
+                to="/auth/signin"
                 onClick={toggleMenu}
                 className="bg-white text-[#AE9467] text-center py-3 rounded-xl font-bold mt-4 shadow-xl"
               >

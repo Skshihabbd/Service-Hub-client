@@ -18,15 +18,17 @@ const Root = () => {
     }
   }, [loadings]);
 
- 
+ if( routeLoading) {
+  return <GlobalLoader />
+ }
 
   return (
      <div className="bg-[#FAF9F6] min-h-screen">
 
       
 
-      {/* Route + API loading */}
-      {(loadings || routeLoading) && <GlobalLoader />}
+     
+     
       
       <Navbar />
 

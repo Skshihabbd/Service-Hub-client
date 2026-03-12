@@ -25,3 +25,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </Suspense>
   </React.StrictMode>,
 );
+
+
+setTimeout(() => {
+  const loader = document.getElementById("preloader");
+  if(loader) loader.remove();
+},300);
